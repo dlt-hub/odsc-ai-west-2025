@@ -5,7 +5,8 @@ Supporting materials:
 - [Colab 1: Managing schemas](https://colab.research.google.com/drive/1OpNx-oOIDk-cD5SQa8ipEni1bEnB2hpi?usp=sharing) 
 - [Colab 2: Managing hardware](https://colab.research.google.com/drive/1vt4blX1_icTNrtVmvZy8wPdUYmwmuUXD?usp=sharing) 
 - [Colab 3: Incremental loading](https://colab.research.google.com/drive/1c3GApTKWnlh-h5cwrJ7XPvTWOuEVlwZD?usp=sharing) 
-- [Colab 4: Moving faster with extra tools](https://colab.research.google.com/drive/1PbDDtd5rdZrNmcyuPbG6k71A2s2AcpDB?usp=sharing) 
+- [Colab 4: Moving faster with extra tools](https://colab.research.google.com/drive/1PbDDtd5rdZrNmcyuPbG6k71A2s2AcpDB?usp=sharing)
+- [Slides](https://docs.google.com/presentation/d/16zBkcFDxRNq6Fpkq1cUoQek3ISzDk5J4EbZy5Qa2ErU/edit?usp=sharing)
 
 
 
