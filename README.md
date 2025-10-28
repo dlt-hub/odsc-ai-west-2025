@@ -2,10 +2,10 @@
 
 
 Supporting materials:
-[Colab 1: Managing schemas](https://colab.research.google.com/drive/1OpNx-oOIDk-cD5SQa8ipEni1bEnB2hpi?usp=sharing) 
-[Colab 2: Managing hardware](https://colab.research.google.com/drive/1vt4blX1_icTNrtVmvZy8wPdUYmwmuUXD?usp=sharing) 
-[Colab 3: Incremental loading](https://colab.research.google.com/drive/1c3GApTKWnlh-h5cwrJ7XPvTWOuEVlwZD?usp=sharing) 
-[Colab 4: Moving faster with extra tools](https://colab.research.google.com/drive/1PbDDtd5rdZrNmcyuPbG6k71A2s2AcpDB?usp=sharing) 
+- [Colab 1: Managing schemas](https://colab.research.google.com/drive/1OpNx-oOIDk-cD5SQa8ipEni1bEnB2hpi?usp=sharing) 
+- [Colab 2: Managing hardware](https://colab.research.google.com/drive/1vt4blX1_icTNrtVmvZy8wPdUYmwmuUXD?usp=sharing) 
+- [Colab 3: Incremental loading](https://colab.research.google.com/drive/1c3GApTKWnlh-h5cwrJ7XPvTWOuEVlwZD?usp=sharing) 
+- [Colab 4: Moving faster with extra tools](https://colab.research.google.com/drive/1PbDDtd5rdZrNmcyuPbG6k71A2s2AcpDB?usp=sharing) 
 
 
 
@@ -38,36 +38,18 @@ The slides contrast a simple 4-step `pandas` flow with the complex, multi-compon
 - **Transparent**: not a black box; users own their code
 - **Vendor-agnostic**: avoid lock-in; move between destinations easily
 
-## Core Technical Concepts (dlt)
-Key Python decorators and primitives:
-
-- `@dlt.resource`
-  - Defines a data-producing function (e.g., `def coin_list()`)
-- `@dlt.transformer`
-  - A dependent resource that uses data from previous resource to get more data.
-- `@dlt.source`
-  - Groups multiple resources/transformers into a single source. Yielded resources get loaded.
-- `pipeline.run(source)`
-  - Executes the pipeline with a data source that can be a dlt source, dlt resource, or any iterable object (e.g., `pipeline.run(source)`)
-
-Core function: dlt loads json "magically" into strongly typed flat unnested tables.
-
 ## Workshop Agenda (Deep Dive Topics)
 
 Rapid-fire explanations across four areas, with self-paced examples in notebooks
 
 ### Topic 1: Schema Management
 
-- [Colab notebook link](https://colab.research.google.com/drive/1C0Gt1dmJlkDa_TEqtzEHt1pmHNXDb2NW?usp=sharing)
-
-
-- **Schema Inference**: Automatic schema is inferred on first run. Weakly typed JSON becomes strongly typed relational structures by flattening dictionaries and unpacking lists into sub-tables. [Colab link](https://colab.research.google.com/drive/1C0Gt1dmJlkDa_TEqtzEHt1pmHNXDb2NW#scrollTo=14e42bc3)
-- **Schema Evolution**: Handles source changes by adding new columns/tables by default; can be configured to alert (e.g., Slack) on change. [Colab link](https://colab.research.google.com/drive/1C0Gt1dmJlkDa_TEqtzEHt1pmHNXDb2NW#scrollTo=acb6fb76)
-- **Data Contracts**: When you "hate change", freeze the schema via `schema_contract` to control tables, columns, and `data_type` with modes like `evolve`, `freeze` (stop load), `discard_row`, or `discard_value`. Pydantic models can be used as well. [Colab link](https://colab.research.google.com/drive/1C0Gt1dmJlkDa_TEqtzEHt1pmHNXDb2NW#scrollTo=cf5897df)
+- **Schema Inference**: Automatic schema is inferred on first run. Weakly typed JSON becomes strongly typed relational structures by flattening dictionaries and unpacking lists into sub-tables. 
+- **Schema Evolution**: Handles source changes by adding new columns/tables by default; can be configured to alert (e.g., Slack) on change. 
+- **Data Contracts**: When you "hate change", freeze the schema via `schema_contract` to control tables, columns, and `data_type` with modes like `evolve`, `freeze` (stop load), `discard_row`, or `discard_value`. Pydantic models can be used as 
 
 ### Topic 2: Hardware Bottleneck Management
 
-Notebook 2:
 
 - **Memory (RAM)**: Use Python generators to yield data in chunks; configure `buffer_max_items` so dlt buffers to files after N items.
 - **Disk**: For small disks (e.g., serverless):
@@ -81,53 +63,24 @@ Notebook 2:
 
 ### Topic 3: Incremental Loading & State
 
-Notebook 3:
-
-- **Challenge**: Managing state (checkpoints) is complex.
-- **Approach**:
-  - Run 1: Full extract/load sets initial state
-  - Run 2..n: Incremental extract since the last state
 - **Write Dispositions**: `replace` (full load), `append` (stateless), `merge` (upsert with primary key), `scd2` (Type 2, `valid_from`/`valid_to`)
 - **State Handling**: dlt state is a Python dict persisted in a separate destination table (more robust than orchestrator/implicit state)
-- **Two Methods**:
-  - Custom: `dlt.current.resource_state().setdefault(...)` and `dlt.current.resource_state()["last_updated"] = ...`
-  - Cursor-based (Automated): `updated_at=dlt.sources.incremental("updated_at")`; dlt inspects yielded data, saves the last value to state, and exposes `updated_at.start_value` for the next run
+
 
 ### Topic 4: Bonus Round & dlt Ecosystem
 
 - **REST API Source**: Templated source for many APIs without writing Python; configure client, auth, paginator, and resources in a dictionary.
-    Docs link: 
+    Docs link: [rest api source](https://dlthub.com/docs/dlt-ecosystem/verified-sources/rest_api/basic)
 - **Workspace Dashboard**: Browse schemas, debug pipelines, overall view.
-    Docs link:
+    Docs link: [validate with dasbboard](https://dlthub.com/docs/dlt-ecosystem/llm-tooling/llm-native-workflow#validate-with-pipeline-dashboard)
 - **Ibis Integration**: Query datasets with a single, backend-agnostic API in ~20 systems (DuckDB, Snowflake, BigQuery, etc.).
-    Docs link:
+    Docs link: [Ibis](https://dlthub.com/docs/general-usage/dataset-access/ibis-backend)
 - **Marimo Notebooks**: Reactive notebooks saved as clean `.py` files (not `.ipynb`).
     Docs link:
 - **LLM-native Scaffolding**: 4,100+ scaffolds generated from API docs to solve long-tail connectors.
-    Link: 
+    Link: [marimo](https://dlthub.com/docs/general-usage/dataset-access/marimo)
 - **LLM-native Workflow**: (1) Init scaffold, (2) Generate running code, (3) Debug in dashboard, (4) Explore in Marimo.
- - Docs link:
+ - Docs link: [LLM native workflow](https://dlthub.com/docs/dlt-ecosystem/llm-tooling/llm-native-workflow) 
 
-## Notebooks
-Hands-on notebooks for each topic are in `notebooks/`:
-- `notebooks/1_schema_management.ipynb`
-- `notebooks/2_hardware_bottlenecks.ipynb`
-- `notebooks/3_incremental_loading.ipynb`
-- `notebooks/4_dlt_ecosystem.ipynb`
 
-## Setup
-1. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -U pip
-   pip install -r requirements.txt
-   ```
-3. Launch Jupyter:
-   ```bash
-   jupyter lab
-   ```
 
